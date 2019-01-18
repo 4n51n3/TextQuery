@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Queries">
+      <UniqueIdentifier>{b1064c8e-dbb7-4df2-8a50-e5cd577fc83f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Queries\Abstract">
+      <UniqueIdentifier>{801b6001-ca8c-4280-9227-413f403532a1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TextQuery.h">
@@ -20,6 +26,15 @@
     </ClInclude>
     <ClInclude Include="QueryResult.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WordQuery.h">
+      <Filter>Header Files\Queries</Filter>
+    </ClInclude>
+    <ClInclude Include="Query_base.h">
+      <Filter>Header Files\Queries\Abstract</Filter>
+    </ClInclude>
+    <ClInclude Include="Query.h">
+      <Filter>Header Files\Queries</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

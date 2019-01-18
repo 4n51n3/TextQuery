@@ -1,3 +1,4 @@
+#pragma once
 #include "TextQuery.h"
 
 
@@ -32,12 +33,12 @@ QueryResult TextQuery::query(std::string str) const
 {
 	try
 	{
-		std::set<uint> line_numbers = words.at(str);
+		std::shared_ptr<std::set<uint>> line_numbers(
+			new std::set<uint>(std::move(words.at(str))));
 		return QueryResult(str, lines, line_numbers);
 	}
 	catch (...) {
-		return QueryResult(str, lines, std::set<uint>());
+		return QueryResult(str, lines, std::make_shared<std::set<uint>>());
 	}
-	
 }
 

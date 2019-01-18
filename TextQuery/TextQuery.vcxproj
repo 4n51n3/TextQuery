@@ -115,8 +115,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Query.h" />
     <ClInclude Include="QueryResult.h" />
+    <ClInclude Include="Query_base.h" />
     <ClInclude Include="TextQuery.h" />
+    <ClInclude Include="WordQuery.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="QueryResult.cpp" />

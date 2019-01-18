@@ -1,10 +1,9 @@
 #include "QueryResult.h"
 
 
-
 QueryResult::QueryResult(std::string _sought, std::shared_ptr<lines_data> _lines,
-	const std::set<uint>& _line_numbers) :
-	sought(_sought), lines(_lines), line_numbers(_line_numbers)
+	std::shared_ptr<std::set<uint>> _line_numbers) : sought(_sought),
+	lines(_lines), line_numbers(_line_numbers)
 {
 }
 
@@ -14,13 +13,30 @@ QueryResult::~QueryResult()
 
 void QueryResult::print() const
 {
-	
-	std::cout << "Search for '"<< sought << "'" << std::endl;
-	if (line_numbers.empty()) {
-		std::cout << "Nothing found." << std::endl;
+	using std::endl;
+	using std::cout;
+	cout << "Search for '"<< sought << '\'' << endl << "Found on (" << line_numbers->size() << ") strings" << endl ;
+	if (line_numbers->empty()) {
+		cout << "Nothing found." << endl;
 		return;
 	}
-	for (auto i : line_numbers) {
-		std::cout << "(" << i << " line): " << *(*lines)[i - 1] << std::endl;
+	for (auto i : *line_numbers) {
+		cout << "(" << i << " line): " << *(*lines)[i - 1] << '\n';
 	}
+	cout << endl;
+}
+
+std::shared_ptr<lines_data> QueryResult::getData() const
+{
+	return lines;
+}
+
+std::shared_ptr<std::set<uint>> QueryResult::getLines() const
+{
+	return line_numbers;
+}
+
+std::string QueryResult::getSought() const
+{
+	return sought;
 }
