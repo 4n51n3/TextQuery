@@ -66,6 +66,10 @@ private:
 	QueryResult eval(const TextQuery & tx) override {
 		QueryResult left = lhs.eval(tx);
 		QueryResult right = rhs.eval(tx);
+
+		if (left.isEmpty() || right.isEmpty())
+			return QueryResult(BinaryQuery_base::rep(), left.getData(), std::make_shared<set<uint>>());
+
 		std::shared_ptr<std::set<unsigned int>> intersect = std::make_shared<std::set<unsigned int>>();
 
 		std::set_intersection(left.getLines()->begin(), left.getLines()->end(),
@@ -84,6 +88,10 @@ private:
 	virtual QueryResult eval(const TextQuery & tx) override {
 		QueryResult left = lhs.eval(tx);
 		QueryResult right = rhs.eval(tx);
+		if (left.isEmpty())
+			return right;
+		if (right.isEmpty())
+			return left;
 		shared_ptr<set<unsigned int>> union_ = std::make_shared<set<unsigned int>>();
 
 		std::set_union(left.getLines()->begin(), left.getLines()->end(),
