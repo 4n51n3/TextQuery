@@ -89,9 +89,9 @@ private:
 		QueryResult left = lhs.eval(tx);
 		QueryResult right = rhs.eval(tx);
 		if (left.isEmpty())
-			return right;
+			return QueryResult(rep(), right.getData(), right.getLines());
 		if (right.isEmpty())
-			return left;
+			return QueryResult(rep(), left.getData(), left.getLines());
 		shared_ptr<set<unsigned int>> union_ = std::make_shared<set<unsigned int>>();
 
 		std::set_union(left.getLines()->begin(), left.getLines()->end(),
@@ -107,13 +107,16 @@ private:
 	NotQuery(const Query& _q) : q(_q){}
 	virtual QueryResult eval(const TextQuery&tx) override {
 		QueryResult result = q.eval(tx);
-		if (result.isEmpty())
-			return std::move(result);
+		shared_ptr<set<uint>> set_computed = std::make_shared<set<uint>>();
 		auto set_lines = result.getLines();
 		auto max_size = result.getData()->size();
-		shared_ptr<set<uint>> set_computed = std::make_shared<set<uint>>();
+
 		for (size_t i = 1; i <= max_size; ++i)
 			set_computed->insert(i);
+		if (result.isEmpty()) {
+			return QueryResult(rep(), result.getData(), set_computed);
+		}
+
 		///
 		//std::iota(set_computed->begin(), set_computed->end(), 1);
 		///
@@ -123,7 +126,7 @@ private:
 	}
 
 	virtual std::string rep() const override {
-		return "~" + q.rep();
+		return "~(" + q.rep() + ')';
 	}
 
 	Query q;

@@ -3,30 +3,62 @@
 #include <iostream>
 #include <cctype>
 #include "Query.h"
-
+#include <algorithm>
 #include <regex>
 #include <vector>
 
 using std::regex;
 using std::vector;
-
+using std::string;
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::exception;
 
 //  \"[^&~|]+\"
 template<typename T>
 T pop(vector<T>& v) {
-	T tmp = v.back();
+	if (v.empty()) {
+		throw exception("Access to empty variable");
+	}
+	T tmp(std::move(v.back()));
 	v.pop_back();
 	return tmp;
 }
 
+inline string& cleanString(string& str) {
+	str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+	return str;
+}
 
-/// bug: "lorem" & ("leo"|"ipsum")
-/// deleting spaces can solve the bug
-Query parse(const string& str) {
+inline void checkString(const string& str) {
+	if (str.empty())
+		throw std::exception("The string was empty");
+}
+
+inline void compute(vector<Query>& operandStack, vector<char>& operatorStack) {
+	char op = pop(operatorStack);
+	auto left = pop(operandStack);
+	if (op == '~') {
+		operandStack.push_back(~left);
+	}
+	else {
+		auto right = pop(operandStack);
+		if (op == '&')
+			operandStack.push_back(left & right);
+		else if (op == '|')
+			operandStack.push_back(left | right);
+	}
+}
+
+Query parse(string str) {
+
+
+	checkString(cleanString(str));
 	vector<Query> operandStack;
 	vector<char> operatorStack;
-	regex operand("\"[^&~|]+\"");
-	string operators("()&|~");
+	const static regex operand("\"[^&~|]+\"");
+	const static string operators("()&|~");
 	for (int i = 0; i < str.size(); ++i) {
 		char ch = str[i];
 		if (ch == ' ')
@@ -34,21 +66,11 @@ Query parse(const string& str) {
 		if (operators.find(ch) != string::npos) {
 			if (ch == ')') {
 				/// compute Query
-				char op = pop(operatorStack);
-				auto left = pop(operandStack);
-				if (op == '~') {
-					operandStack.push_back(~left);
-				}
-				else {
-					auto right = pop(operandStack);
-					if (op == '&')
-						operandStack.push_back(left & right);
-					else if (op == '|')
-						operandStack.push_back(left | right);
-				}
+				compute(operandStack, operatorStack);
 				operatorStack.pop_back();
 				continue;
 			}
+		
 			operatorStack.push_back(ch);
 			continue;
 		}
@@ -68,45 +90,40 @@ Query parse(const string& str) {
 			if (substr.empty())
 				throw std::exception("Could not parse operand.");
 
-			if (operatorStack.back() == '~') {
+			if (!operatorStack.empty() && operatorStack.back() == '~') {
 				pop(operatorStack);
 				operandStack.push_back(~Query(substr));
 			}
 			else {
 				operandStack.push_back(Query(substr));
 			}
-			
+			continue;
 		}
+		throw std::exception("Unrecognized character");
 	}
 	/// compute if not enough
 	while (!operatorStack.empty())
 	{
-		char op = pop(operatorStack);
-		auto left = pop(operandStack);
-		if (op == '~') {
-			operandStack.push_back(~left);
-		}
-		else {
-			auto right = pop(operandStack);
-			if (op == '&')
-				operandStack.push_back(left & right);
-			else if (op == '|')
-				operandStack.push_back(left | right);
-		}
+		compute(operandStack, operatorStack);
 	}
-	return operandStack.back();
+	return operandStack.empty() ? Query("") : operandStack.back();
 }
 
 int main() {
 	TextQuery tq("file.txt");
 	while (true) {
 		string str;
-		//std::cin >> str; /// bad. interrupts after space
+		cout << "Input query: ";
 		std::getline(std::cin, str);
 		if (str[0] == 'q' || str[0] == 'Q')
 			return 0;
-
-		parse(str).eval(tq).print();//parse("\"ipsum\" & \"lorem\"");
+		try {
+			parse(str).eval(tq).print();
+		}
+		catch (std::exception &ex) {
+			std::cerr << ex.what() << std::endl;
+		}
 	}
+	Query("text") & Query("text");
 	return -1;
 }

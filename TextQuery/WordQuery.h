@@ -9,7 +9,7 @@ private:
 	explicit WordQuery(const std::string& str) : query_word(str){}
 	virtual QueryResult eval(const TextQuery & tx) override {
 		if (query_word.empty())
-			return QueryResult();
+			return QueryResult(rep());
 		return tx.query(query_word);
 	};
 	virtual std::string rep() const override {

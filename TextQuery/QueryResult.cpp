@@ -1,11 +1,11 @@
 #include "QueryResult.h"
 
-
-QueryResult::QueryResult()
-{
-	lines = std::make_shared<lines_data>();
-	line_numbers = std::make_shared<std::set<uint>>();
-}
+//
+//QueryResult::QueryResult()
+//{
+//	lines = std::make_shared<lines_data>();
+//	line_numbers = std::make_shared<std::set<uint>>();
+//}
 
 QueryResult::QueryResult(std::string _sought, std::shared_ptr<lines_data> _lines,
 	std::shared_ptr<std::set<uint>> _line_numbers) : sought(_sought),

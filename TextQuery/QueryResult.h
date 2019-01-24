@@ -12,7 +12,17 @@ class QueryResult
 	std::shared_ptr<std::set<uint>> line_numbers;
 	std::string sought;
 public:
-	QueryResult();
+
+	explicit QueryResult(const std::string& _sought) : lines(std::make_shared<lines_data>()), 
+		line_numbers(std::make_shared<std::set<uint>>()), sought(_sought)
+	{
+	}
+
+	explicit QueryResult(const std::string&& _sought) : lines(std::make_shared<lines_data>()),
+		line_numbers(std::make_shared<std::set<uint>>()), sought(std::move(_sought))
+	{
+	}
+
 	QueryResult(std::string _sought, std::shared_ptr<lines_data> _lines,
 		std::shared_ptr<std::set<uint>> _line_numbers);
 	~QueryResult();

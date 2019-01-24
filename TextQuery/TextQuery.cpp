@@ -41,4 +41,3 @@ QueryResult TextQuery::query(std::string str) const
 		return QueryResult(str, lines, std::make_shared<std::set<uint>>());
 	}
 }
-
