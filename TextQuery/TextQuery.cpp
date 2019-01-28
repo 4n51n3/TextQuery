@@ -8,7 +8,7 @@ TextQuery::TextQuery(std::string path)
 	lines = std::make_shared<lines_data>();
 	std::ifstream stream(path);
 	if (!stream.is_open())
-		throw std::runtime_error("File cannot be read!");
+		throw std::runtime_error("File could not be read!");
 	std::string line;
 	do {
 		std::getline(stream, line);

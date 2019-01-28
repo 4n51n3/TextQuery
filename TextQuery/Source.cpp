@@ -14,12 +14,15 @@ using std::cout;
 using std::cerr;
 using std::endl;
 using std::exception;
+using std::out_of_range;
+using std::invalid_argument;
+using std::runtime_error;
 
 //  \"[^&~|]+\"
 template<typename T>
 T pop(vector<T>& v) {
 	if (v.empty()) {
-		throw exception("Access to empty variable");
+		throw out_of_range("Access to empty variable");
 	}
 	T tmp(std::move(v.back()));
 	v.pop_back();
@@ -33,7 +36,7 @@ inline string& cleanString(string& str) {
 
 inline void checkString(const string& str) {
 	if (str.empty())
-		throw std::exception("The string was empty");
+		throw std::invalid_argument("The string was empty");
 }
 
 inline void compute(vector<Query>& operandStack, vector<char>& operatorStack) {
@@ -88,7 +91,7 @@ Query parse(string str) {
 				}
 			}
 			if (substr.empty())
-				throw std::exception("Could not parse operand.");
+				throw invalid_argument("Could not parse operand.");
 
 			if (!operatorStack.empty() && operatorStack.back() == '~') {
 				pop(operatorStack);
@@ -99,7 +102,7 @@ Query parse(string str) {
 			}
 			continue;
 		}
-		throw std::exception("Unrecognized character");
+		throw runtime_error("Unrecognized character");
 	}
 	/// compute if not enough
 	while (!operatorStack.empty())
